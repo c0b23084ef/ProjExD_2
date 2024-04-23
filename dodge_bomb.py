@@ -21,6 +21,7 @@ def check_bound(ob_rct:pg.Rect) -> tuple[bool, bool]:
     if ob_rct.top < 0 or HEIGHT < ob_rct.bottom:
         tate = False
     return yoko, tate
+    
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -41,6 +42,10 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
+            
+        if kk_rct.colliderect(bd_rct):
+            return
+        
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
