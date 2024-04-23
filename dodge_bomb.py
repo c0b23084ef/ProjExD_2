@@ -2,7 +2,8 @@ import os
 import sys
 import pygame as pg
 import random
-
+import time
+#import cv2
 
 WIDTH, HEIGHT = 1000, 600
 IDOU = { #移動量省略
@@ -21,13 +22,19 @@ def check_bound(ob_rct:pg.Rect) -> tuple[bool, bool]:
     if ob_rct.top < 0 or HEIGHT < ob_rct.bottom:
         tate = False
     return yoko, tate
-    
+
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 2.0)
+    kk2_img = pg.transform.rotozoom(pg.image.load("fig/2.png"), 0, 2.0)
+    kk3_img = pg.transform.rotozoom(pg.image.load("fig/0.png"), 0, 2.0)
+    kk4_img = pg.transform.rotozoom(pg.image.load("fig/5.png"), 0, 2.0)
+    baku_img = pg.transform.rotozoom(pg.image.load("fig/11.png"), 0, 2.0)
+    kk5_img = pg.transform.rotozoom(pg.image.load("fig/6.png"), 0, 2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900, 400
     bd_img = pg.Surface((20, 20))
@@ -35,6 +42,8 @@ def main():
     pg.draw.circle(bd_img, (255, 0, 0), (10, 10), 10)
     bd_rct = bd_img.get_rect()
     bd_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
+    fonto=pg.font.Font(None, 80)
+    txt = fonto.render("game over", True, (0, 0, 0))
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
@@ -42,12 +51,15 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-            
-        if kk_rct.colliderect(bd_rct):
-            return
+        #衝突管理 
+        #if kk_rct.colliderect(bd_rct):
+            #screen.blit(kk2_img,(500, 300))
         
         screen.blit(bg_img, [0, 0]) 
 
+        #mouse_lst=pg.mouse.mouseDragged()
+        mouse_lst=pg.mouse.get_pressed()
+        kk_img=[mouseX, mouseY]
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         for k, v in IDOU.items():
@@ -61,6 +73,21 @@ def main():
         bd_rct.move_ip(vx, vy)       
         screen.blit(bd_img, bd_rct)
         yoko, tate = check_bound(bd_rct)
+        #衝突したときにゲームオーバー表示
+        if kk_rct.colliderect(bd_rct):
+            screen.blit(txt,[350, 250])
+            sikaku=pg.Surface((WIDTH, HEIGHT))
+            pg.draw.rect(sikaku,(0, 0, 0), (0, 0, WIDTH, HEIGHT))
+            sikaku.set_alpha(170)
+            #sikaku.set_colorkey((0, 0, 0))
+            screen.blit(sikaku,[0, 0])
+            #screen.blit(baku_img,[0, 0])
+            pg.display.update()
+            time.sleep(5)
+            return
+
+
+            
         if not yoko:  
             vx *= -1
         if not tate:  
