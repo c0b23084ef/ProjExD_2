@@ -59,7 +59,7 @@ def main():
 
         #mouse_lst=pg.mouse.mouseDragged()
         mouse_lst=pg.mouse.get_pressed()
-        kk_img=[mouseX, mouseY]
+        #kk_img=[mouseX, mouseY]
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         for k, v in IDOU.items():
