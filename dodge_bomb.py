@@ -4,7 +4,7 @@ import pygame as pg
 import random
 
 
-WIDTH, HEIGHT = 1600, 900
+WIDTH, HEIGHT = 1000, 600
 IDOU = { #移動量省略
     pg.K_UP: (0, -5),
     pg.K_DOWN: (0, +5),
@@ -13,6 +13,14 @@ IDOU = { #移動量省略
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(ob_rct:pg.Rect) -> tuple[bool, bool]:
+    #画面内判定、画面内ならTrue
+    yoko, tate = True, True
+    if ob_rct.left < 0 or WIDTH < ob_rct.right: 
+        yoko = False
+    if ob_rct.top < 0 or HEIGHT < ob_rct.bottom:
+        tate = False
+    return yoko, tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -42,9 +50,16 @@ def main():
                sum_mv[0] += v[0]
                sum_mv[1] += v[1]
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
         bd_rct.move_ip(vx, vy)       
         screen.blit(bd_img, bd_rct)
+        yoko, tate = check_bound(bd_rct)
+        if not yoko:  
+            vx *= -1
+        if not tate:  
+            vy *= -1
         pg.display.update()
         tmr += 1
         clock.tick(50)
